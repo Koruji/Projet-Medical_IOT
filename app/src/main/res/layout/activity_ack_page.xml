@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--___________________Interface n° chambre de l'alerte en cours_____________________________-->
+    <FrameLayout
+        android:id="@+id/frameLayout_ack_room_concerned"
+
+        android:layout_width="match_parent"
+        android:layout_height="131dp"
+        android:background="@color/darkPurple"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--texte indiquant que le numéro de chambre est indiqué-->
+        <TextView
+            android:id="@+id/text_ack_room_concerned"
+
+            style="@style/AlertTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="@string/ack_page_message_room_concerned" />
+
+        <!--texte qui sera modifié par la donnée recu par la base de donnée-->
+        <TextView
+            android:id="@+id/data_room_concerned"
+
+            style="@style/AlertTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="78dp"
+            android:gravity="center"
+            android:text="@string/data_change_number_room" />
+
+        <!--icone d'alerte-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_alert"
+            android:contentDescription="@string/home_alert_begin"/>
+    </FrameLayout>
+
+    <!--___________________________Zone bouton de validation_____________________________________-->
+    <!--Linearlayout pour justement mettre les éléments l'un sur l'autre-->
+    <LinearLayout
+        android:id="@+id/contener_of_checkbox_ack"
+
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout_ack_room_concerned"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin">
+
+        <!--Première checkbox pour le déplacement sur les lieux-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ack_checkbox_presence_cardview"
+
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="15dp"
+            app:cardBackgroundColor="@color/lightBlue"
+            app:cardCornerRadius="15dp">
+
+            <CheckBox
+                android:id="@+id/ack_checkbox_presence"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:gravity="center"
+                android:text="@string/ack_page_presence_validation_button" />
+        </androidx.cardview.widget.CardView>
+
+        <!--Deuxième checkbox pour l'acquittement-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ack_checkbox_acceptance_cardview"
+
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardBackgroundColor="@color/lightBlue"
+            app:cardCornerRadius="15dp"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/ack_checkbox_acceptance"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:gravity="center"
+                android:text="@string/ack_page_load_acceptance_button" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!--___________________________________Espace commentaire___________________________________-->
+    <!--Texte annoncant l'espace commentaire-->
+    <LinearLayout
+        android:id="@+id/ack_comment_zone"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="5dp"
+
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contener_of_checkbox_ack"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/DefaultTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ack_page_comment_area"/>
+
+        <!--Zone de commentaire-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/comment_zone_ack_cardview"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/lightGray"
+            app:cardCornerRadius="20dp">
+
+            <!--Espace de saisi du commentaire-->
+            <EditText
+                android:id="@+id/comment_zone_ack"
+
+                style="@style/DefaultNotificationTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_margin="5dp"
+                android:gravity="start"
+                android:hint="@string/explanation_comment_zone_ack"
+                android:inputType="text"
+                android:textColor="@color/black"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!--_____________________________Espace bas de page_____________________________________-->
+    <FrameLayout
+        android:id="@+id/space_for_logo"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logomedical_iot"
+            android:layout_gravity="center"
+
+            android:contentDescription="@string/application_logo"/>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

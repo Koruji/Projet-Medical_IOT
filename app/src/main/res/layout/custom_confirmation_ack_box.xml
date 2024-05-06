@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="357dp"
+    android:layout_height="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="10dp">
+
+    <!--Demande de la confirmation | texte changeable en fonction de la situation-->
+    <TextView
+        android:id="@+id/ack_confirmation_popup_text"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/DefaultTextStyle"
+        android:gravity="center_horizontal"
+        android:text="@string/ack_confirmation_with_comment"
+        android:layout_margin="20dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="25dp">
+
+        <!--bouton validation-->
+        <Button
+            android:id="@+id/ack_confirmation_button_yes"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ack_confirmation_yes" />
+
+        <!--bouton négation-->
+        <Button
+            android:id="@+id/ack_confirmation_button_no"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ack_confirmation_no"
+            android:layout_marginStart="50dp"/>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

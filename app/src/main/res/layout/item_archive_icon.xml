@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity">
+
+    <!--Layout pour la création de l'interface archive-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/background_icon_history"
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/pink"
+        app:cardCornerRadius="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <!--Texte indicant le n° de chambre de l'alerte déjà traitée-->
+        <TextView
+            android:id="@+id/history_icon"
+
+            style="@style/DefaultListTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:gravity="center"
+            android:text="@string/home_2_number_of_room" />
+
+        <!--Texte modifiable avec le numéro de chambre-->
+        <TextView
+            android:id="@+id/data_room_concerned"
+
+            style="@style/DefaultListTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/data_change_number_room"
+            android:layout_marginStart="96dp"
+            android:gravity="center"
+            android:layout_gravity="start"/>
+
+        <!--Texte pour l'heure d'acquittement-->
+        <TextView
+            android:id="@+id/history_icon_2"
+
+            style="@style/DefaultListTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="150dp"
+
+            android:clickable="true"
+            android:focusable="true"
+
+            android:gravity="center"
+            android:layout_gravity="start"
+            android:text="@string/home_2_hour_ack" />
+
+        <!--Texte modifiable pour l'heure-->
+        <TextView
+            android:id="@+id/data_room_concerned_hour"
+
+            style="@style/DefaultListTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/data_change_hour"
+            android:layout_marginStart="210dp"
+            android:gravity="center"
+            android:layout_gravity="start"/>
+
+        <ImageSwitcher
+            android:id="@+id/save_statue"
+
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/custom_confirmation_ack_background"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="30dp"/>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

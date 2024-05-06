@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!--_____________________________Zone alerte_____________________________________-->
+    <FrameLayout
+        android:id="@+id/notification_zone"
+
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:background="@color/lightBlue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--_____________________________Zone historique_____________________________________-->
+    <LinearLayout
+        android:id="@+id/archive_zone_home"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notification_zone"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="20dp">
+
+        <!--Texte indiquant a quoi correspond la zone-->
+        <TextView
+            style="@style/DefaultTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/home_history_of_alerts" />
+
+        <!--Zone des alertes traitées-->
+        <FrameLayout
+            android:id="@+id/archive_container_home"
+
+            android:layout_width="match_parent"
+            android:layout_height="338dp"/>
+
+            <!-- A add plus tard <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/lightGray"/> -->
+    </LinearLayout>
+
+    <!--_________________________________Informations de connexion WIFI______________________-->
+    <!--Texte indiquant les infos du WIFI-->
+    <TextView
+        android:id="@+id/wifi_info_home_page"
+
+        style="@style/DefaultTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/home_wifi_info"
+        app:layout_constraintBottom_toTopOf="@+id/space_for_logo"
+        app:layout_constraintTop_toBottomOf="@+id/archive_zone_home" />
+
+    <!--_____________________________Espace bas de page_____________________________________-->
+    <FrameLayout
+        android:id="@+id/space_for_logo"
+
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!--Logo de l'application-->
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logomedical_iot"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+
+            android:contentDescription="@string/application_logo"/>
+
+        <!--Bouton de déconnexion-->
+        <Button
+            android:id="@+id/deconnexion_button"
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/deconnection_button"
+            android:layout_marginEnd="50dp"
+            android:contentDescription="@string/button_description_home_page"/>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

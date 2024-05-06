@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Medical_IOT</string>
+
+    <!--Page accueil-->
+    <string name="home_history_of_alerts">Alertes traitées </string>
+    <string name="home_emergency_number">Numéros d\'urgences"</string>
+    <string name="home_alert_begin">Alerte en cours !</string>
+
+    <!--Messages erreur-->
+    <string name="save_error">Erreur de sauvegarde !</string>
+    <string name="wifi_error">Pas de connexion WIFI</string>
+    <string name="DB_error">Pas d\'accès a la base de données</string>
+    <string name="data_validation">Validation sauvegardée !</string>
+
+    <!--Page interface acquittement-->
+    <string name="ack_page_message_room_concerned">N° de chambre concernée : </string>
+    <string name="ack_page_presence_validation_button"> Valider votre présence sur les lieux</string>
+    <string name="ack_page_load_acceptance_button">Valider la prise en charge de l\'alerte</string>
+    <string name="ack_page_comment_area">Commentaires</string>
+    <string name="ack_page_emergency_number">Numéros d\'urgences</string>
+    <string name="explanation_comment_zone_ack">Saisissez des commentaires relatifs\nà l\'intervention ici</string>
+
+    <!--Page de login-->
+    <string name="ack_page_supervisor_identification">Surveillant de garde</string>
+    <string name="ack_page_supervisor_name">Nom</string>
+    <string name="ack_page_supervisor_surname">Prénom</string>
+    <string name="ack_page_supervisor_id">ID</string>
+    <string name="ack_page_supervisor_password">Mot de passe</string>
+    <string name="ack_page_supervisor_connect">Se connecter</string>
+
+    <!--Boite de dialogue de confirmation d'acquittement-->
+    <string name="ack_confirmation_with_comment">Souhaitez-vous valider et fermer la page d\'acquittement ?</string>
+    <string name="ack_confirmation_without_comment">Souhaitez-vous valider sans ajout de commentaires ?</string>
+    <string name="ack_confirmation_yes">OUI</string>
+    <string name="ack_confirmation_no">NON</string>
+
+    <!--Page interface alertes traitées-->
+    <string name="home_2_number_of_room">Chambre n°</string>
+    <string name="home_2_hour_ack">Heure : </string>
+
+    <!--Page accès a un historique précis-->
+    <string name="history_access_title">Alerte chambre n°</string>
+    <string name="history_access_emergency_number">Numéros d\'urgences</string>
+
+    <!--Descriptions d'image-->
+    <string name="application_logo">Logo de l\'application</string>
+    <string name="alert_icon">Cloche d\'alerte</string>
+    <string name="back_button">bouton de retour</string>
+
+    <!--Texte qui sera modifié par la BD !!!!!!!!!!!!-->
+    <string name="data_change_number_room">num</string>
+    <string name="data_change_hour">hour</string>
+    <string name="home_wifi_info">wifi</string>
+    <string name="button_description_home_page">Bouton de deconnexion</string>
+
+
+</resources>
