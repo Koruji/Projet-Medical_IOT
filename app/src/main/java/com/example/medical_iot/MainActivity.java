@@ -128,7 +128,15 @@ public class MainActivity extends AppCompatActivity
             startForegroundService(serviceUDP);
         }
 
-        receptionData();
+        if (WaitingDataRepository.getInstance().getNombreAlerte() != 0)
+        {
+            receptionData();
+            if (countOfCommit < 1)
+            {
+                showAlert();
+                countOfCommit++;
+            }
+        }
 
         //----------------------Récuperation de la donnée de l'acquittement et traitement---------------------------------------//
         Intent intent = getIntent();
@@ -185,8 +193,11 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             if(ListenUDPservice.ACTION_UDP_BROADCAST.equals(intent.getAction()))
             {
-                //récupération des alertes
-                receptionData();
+                //récupération des alertes s'il n'y a qu'une seule valeur dans la liste d'attente
+                if (WaitingDataRepository.getInstance().getNombreAlerte() == 1)
+                {
+                    receptionData();
+                }
 
                 //s'il n'y a pas déjà un commit de fait pour une alerte, alors on affiche la bannière d'alerte
                 //cela permet d'éviter les erreurs en cas de réception simultanée d'alerte
@@ -417,7 +428,7 @@ public class MainActivity extends AppCompatActivity
         executorServerSend.execute(() -> {
             try {
                 serveurEnvoi = new UDPShortService();
-                saveState = serveurEnvoi.envoiAcquittement(requeteSQL);
+                serveurEnvoi.envoiAcquittement(requeteSQL);
                 Log.d("CONNEXION", "requête SQL envoyé");
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);

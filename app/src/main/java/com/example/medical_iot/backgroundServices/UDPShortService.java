@@ -17,7 +17,7 @@ public class UDPShortService
     //-------------------Serveur permettant la réception des données d'alerte + envoi des données id et acquittement---------------------------------------//
     //----envoi
     private DatagramSocket socketSendUDP; //socket pour envoi
-    final static int portEnvoi = 12345; //port du destinataire
+    final static int portEnvoi = 5002; //port du destinataire
     private DatagramPacket paquetEnvoye;
     private InetAddress adresseIPEnvoi;
 
@@ -37,7 +37,7 @@ public class UDPShortService
 
     //----------envoi des données acquittements
     public boolean envoiAcquittement(String p_requeteSQL) throws UnknownHostException {
-        adresseIPEnvoi = InetAddress.getByName("192.168.0.6");
+        adresseIPEnvoi = InetAddress.getByName("192.168.1.90");
         byte[] recep = new byte[1024];
         paquetRecu = new DatagramPacket(recep, recep.length);
         boolean save = false;
