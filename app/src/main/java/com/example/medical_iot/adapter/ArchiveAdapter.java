@@ -9,12 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.medical_iot.ArchiveRepository;
+import com.example.medical_iot.repository.ArchiveRepository;
 import com.example.medical_iot.R;
 import com.example.medical_iot.model.ArchiveDataModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 //class sur la création et les interactions des icones d'archive

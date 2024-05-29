@@ -1,10 +1,6 @@
 package com.example.medical_iot;
 
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -15,170 +11,206 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.medical_iot.model.ArchiveDataModel;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-import org.w3c.dom.Text;
+import com.example.medical_iot.model.ArchiveDataModel;
+import com.example.medical_iot.repository.WaitingDataRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
+//------------------------------------SOURCES--------------------------//
+//https://www.youtube.com/watch?v=J7m5Gq-Kiqs --> boîte de dialogue
+//https://openclassrooms.com/fr/courses/4568596-construisez-une-interface-utilisateur-flexible-et-adaptative/4568603-comprenez-les-differents-moyens-de-naviguer-sur-une-application
+//https://www.youtube.com/watch?v=IR4OSBb__iQ --> liaison entre les activités
+//--------------------------------------------------------------------//
 
 public class AckPage extends AppCompatActivity {
 
-    private ArchiveDataModel archive;
+    //_________________________________________________ATTRIBUTS_______________________________________________________//
+    //----données de l'alerte
+    private TextView alertZone; //zone de l'alerte en cours
+    private TextView numberOfRoom; //numéro de la chambre concernée par l'alerte
 
+    //----données d'alerte et d'acquittement
+    private ArchiveDataModel archive; //objet contenant toutes les données à transmettre
+    public String donneeRecuAlerte; //donnee transféré de la page menu vers la page acquittement
+
+    //----données de l'activité AckPage
+    private CheckBox checkAckMovement; //zone de validation de déplacement
+    private CheckBox checkAckConfirmation; //zone de validation d'acquittement
+    private CardView confirmationAckZone; //représente la zone contenant la validation de déplacement et d'acquittement
+    private LinearLayout zoneComment; //layout de la zone de commentaire
+
+    //----boîte de dialogue
+    private Dialog ackConfirmationDialog; //boite de dialogue
+    private Button confirmationACK; //bouton OUI de la boite de dialogue
+    private Button cancelACK; //bouton NON de la boite de dialogue
+
+    //_____________________________________________EXECUTION PRINCIPALE__________________________________________________//
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //-----------------------CREATION DE L ACTIVITE--------------------------------------------------//
+        //-----------------------Création de l'activité------------------------------------------------------------------//
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ack_page);
 
         Log.d("AckPage", "onCreate: page ack cree");
 
-        //---------------------DECLARATION + PARAMETRAGE VARIABLES--------------------------------------//
-        archive = new ArchiveDataModel();
-        Dialog ackConfirmationDialog = new Dialog(this); //instanciation de la boite de dialogue
+        //-----------------------Mise en place des informations de l'alerte-----------------------------------------------//
+        alertData();
 
-        CheckBox checkAckMovement = findViewById(R.id.ack_checkbox_presence);
-        CheckBox checkAckConfirmation = findViewById(R.id.ack_checkbox_acceptance);
-        EditText ackComment = findViewById(R.id.comment_zone_ack);
-        //EditText ackName = findViewById(R.id.identification_zone_ack_name);
-        //EditText ackSurname = findViewById(R.id.identification_zone_ack_surname);
-        TextView numberOfRoom = findViewById(R.id.data_room_concerned);
+        //-----------------------Mécanique de validation------------------------------------------------------------------//
+        //initialisation des attributs
+        checkAckMovement = findViewById(R.id.ack_checkbox_presence);
+        confirmationAckZone = findViewById(R.id.ack_checkbox_acceptance_cardview);
+        zoneComment = findViewById(R.id.ack_comment_zone);
+        checkAckConfirmation = findViewById(R.id.ack_checkbox_acceptance);
 
-        LinearLayout zoneComment = findViewById(R.id.ack_comment_zone);
-        //LinearLayout identificationZone = findViewById(R.id.ack_identification);
-        CardView confirmationAckZone = findViewById(R.id.ack_checkbox_acceptance_cardview);
+        //tant que le déplacement n'est pas validé, les autres éléments de la page sont inacessibles
+        checkAckMovement.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                //quand le déplacement est validé, on a accès à l'autre partie de la page d'acquittement
+                confirmationAckZone.setVisibility(View.VISIBLE);
+                zoneComment.setVisibility(View.VISIBLE);
+            }
+        });
 
-        //----------------------MISE EN PLACE DES INFORMATIONS D ALERTE RECUP----------------------------//
-        numberOfRoom.setText(String.valueOf(archive.getID_chambre())); //fonctionne
-        //a remplacer par ce que l'on recoit avec la BD
+        //quand on clique sur la validation d'acquittement une boite de dialogue est créée
+        checkAckConfirmation.setOnClickListener(view -> {
+            boolean checked = ((CheckBox) view).isChecked();
+            //on affiche la boite de dialogue
+            if (checked) {
+                Log.d("AckPage", "onClick: je montre la boite de dialogue");
+                createDialogBox();
+            }
 
-        //------------------------PARAMETRAGE BOUTON BACK------------------------------------------------//
+            //si l'on clique sur le NON de la boite de dialogue
+            cancelACK.setOnClickListener(v -> {
+                Log.d("AckPage", "onClick: NON");
+
+                //on décoche la case de validation d'acquittement et on ferme la boîte de dialogue
+                checkAckConfirmation.setChecked(false);
+                ackConfirmationDialog.cancel();
+            });
+
+            //si l'on clique sur le OUI de la boite de dialogue
+            confirmationACK.setOnClickListener(v -> {
+                //fermeture de la boîte de dialogue
+                Log.d("AckPage", "onClick: OUI");
+                ackConfirmationDialog.dismiss();
+
+                //récupération de toutes les données liées à l'acquittement
+                dataToSend();
+
+                //envoi des données vers le mainActivity pour un archivage
+                Intent transfertToHomePage = new Intent(AckPage.this, MainActivity.class);
+                transfertToHomePage.putExtra("archive", archive);
+                transfertToHomePage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(transfertToHomePage);
+                Log.d("MainActivity", "onClick: retour au menu");
+
+                //on supprime l'alerte de la liste d'attente
+                WaitingDataRepository.getInstance().suppAlerte(0);
+                Log.d("CONNEXION", WaitingDataRepository.getInstance().getAlerte().toString());
+
+                //fermeture de l'activité AckPage
+                finish();
+                Log.d("AckPage", "onClick: fermeture de l'activité");
+            });
+        });
+
+
+        //------------------------Paramétrage du bouton retour-----------------------------------------------------------------//
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 //ajout de rien car on veut que le bouton retour soit désactivé lors de l'acquittement
-                Log.d("AckPage", "handleOnBackPressed: tu peux pas");
+                Log.d("AckPage", "handleOnBackPressed: interdit de sortir de l'application par le bouton retour");
             }
         });
+    }
 
-        //----------------------MECANIQUE DE VALIDATION (ACQUITTEMENT)-----------------------------------//
-        //temps que le déplacement n'est pas validé, les autres éléments de la page sont inacessibles
-        checkAckMovement.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    confirmationAckZone.setVisibility(View.VISIBLE);
-                    zoneComment.setVisibility(View.VISIBLE);
-                    //identificationZone.setVisibility(View.VISIBLE);
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : alertData
+    //------FONCTION : récupère les données de l'alerte de l'activité MainActivity et la traite
+    //------RETOUR : aucun
+    private void alertData() {
+        archive = new ArchiveDataModel();
+        Intent intent = getIntent();
 
-                }
-            }
-        });
+        if (intent != null) {
+            donneeRecuAlerte = intent.getStringExtra("donneeAlerte");
+        }
+        String[] donnees = donneeRecuAlerte.split(" ");
+        numberOfRoom = findViewById(R.id.number_room_concerned);
+        alertZone = findViewById(R.id.zone_room_concerned);
 
-        //clic sur le bouton d'acquittement
-        checkAckConfirmation.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onClick(View view) {
-                //on initialise le contenu de la boite de dialogue avec notre layout xml
-                ackConfirmationDialog.setContentView(R.layout.custom_confirmation_ack_box);
+        //récupération de toutes les données de l'alerte nécessaires
+        archive.setID_chambre(Integer.parseInt(donnees[0]));
+        numberOfRoom.setText(String.valueOf(archive.getID_chambre()));
+        alertZone.setText(donnees[2]);
+    }
 
-                //on indique que cela doit apparaitre juste au dessus de l'activité donc page d'acquittement (vu groupé)
-                ackConfirmationDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                ackConfirmationDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_confirmation_ack_background));
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : createDialogBox
+    //------FONCTION : créer une boite de dialogue a choix après un clic sur "Valider l'acquittement"
+    //------RETOUR : aucun
+    private void createDialogBox() {
+        //instanciation de la boite de dialogue
+        ackConfirmationDialog = new Dialog(this);
 
-                //on interdit à l'app de fermer la boite de dialogue en cas de clic en dehors de la zone
-                ackConfirmationDialog.setCancelable(false);
+        //on initialise le contenu de la boite de dialogue avec notre layout xml
+        ackConfirmationDialog.setContentView(R.layout.custom_confirmation_ack_box);
 
-                //on recupere les 2 boutons de notre boite de dialogue + le texte d'affiché
-                Button confirmationACK = ackConfirmationDialog.findViewById(R.id.ack_confirmation_button_yes);
-                Button cancelACK = ackConfirmationDialog.findViewById(R.id.ack_confirmation_button_no);
-                TextView ackDialogText = ackConfirmationDialog.findViewById(R.id.ack_confirmation_popup_text);
+        //on récupère les 2 boutons de notre boite de dialogue + la zone de commentaire
+        confirmationACK = ackConfirmationDialog.findViewById(R.id.ack_confirmation_button_yes);
+        cancelACK = ackConfirmationDialog.findViewById(R.id.ack_confirmation_button_no);
+        EditText ackComment = findViewById(R.id.comment_zone_ack);
 
-                //---------------VERIFICATION DE RENSEIGNEMENT------------------------------------------------------//
-                if (TextUtils.isEmpty(ackComment.getText())) { //changement du texte
-                    ackDialogText.setText(R.string.ack_confirmation_without_comment);
-                }
+        //s'il n'y pas de commentaires dans la zone commentaire on change de message pour la boîte de dialogue
+        //texte de la boite de dialogue
+        /*TextView boxText = findViewById(R.id.ack_confirmation_popup_text);
+        if (TextUtils.isEmpty(ackComment.getText())) { //changement du texte
+            boxText.setText(R.string.ack_confirmation_without_comment);
+        }*/
 
-                /*if (TextUtils.isEmpty(ackName.getText())) {
-                        checkAckConfirmation.setChecked(false);
-                        ackName.setError("A remplir");
-                        ackName.requestFocus();
-                        return;
-                }
+        //on indique la dialogBox doit apparaitre juste au dessus de l'activité AckPage (vu groupé)
+        ackConfirmationDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ackConfirmationDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_confirmation_ack_background));
 
-                if(TextUtils.isEmpty(ackSurname.getText())) {
-                    checkAckConfirmation.setChecked(false);
-                    ackSurname.setError("A remplir");
-                    ackSurname.requestFocus();
-                    return;
-                }
+        //on interdit à l'application de fermer la boite de dialogue en cas de clique en dehors de la zone
+        ackConfirmationDialog.setCancelable(false);
 
-                if (!TextUtils.isEmpty(ackName.getText()) || !TextUtils.isEmpty(ackSurname.getText()))*/
-                //-------------------AFFICHAGE BOITE DIALOGUE-------------------------------------------------------//
-                    boolean checked = ((CheckBox) view).isChecked();
-                    if (checked) {
-                        Log.d("AckPage", "onClick: je montre la boite de dialogue");
-                        ackConfirmationDialog.show();
-                    }
+        //on montre la boite de dialogue
+        ackConfirmationDialog.show();
+    }
 
-                //-----------------------CONDITIONS LIES A LA BOITE DE DIALOGUE-------------------------------------------//
-                //on initialise les actions qui leurs sont associées (ANCIENNE SYNTAXE)
-                //confirmationACK.setOnClickListener(new View.OnClickListener() {
-                //                    @Override
-                //                    public void onClick(View view) {
-                //
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : dataToSend
+    //------FONCTION : récupère les données a stocker dans l'attribut "archive"
+    //------RETOUR : void
+    public void dataToSend() {
+        //récupération de la zone commentaire
+        //zone de commentaire (récupération données)
+        EditText ackComment = findViewById(R.id.comment_zone_ack);
+        String comment = ackComment.getText().toString().trim();
+        archive.setEspace_commentaire(comment);
 
-                cancelACK.setOnClickListener(v -> {
-                    Log.d("AckPage", "onClick: ta clique sur NON");
-                    checkAckConfirmation.setChecked(false);
-                    ackConfirmationDialog.cancel();
-                });
+        //récupération de la valeur de déplacement et d'acquittement
+        archive.setDeplacement_surveillant(checkAckMovement.isChecked());
+        archive.setAcquittement_surveillant(checkAckMovement.isChecked());
 
-                confirmationACK.setOnClickListener(v -> {
-                    //--------------ENSEMBLE DES DONNEES RECUPEREES (archive) APRES FERMETURE BOITE DIALOGUE------------//
-                    String comment = ackComment.getText().toString().trim();
-                    //String name = ackName.getText().toString().trim();
-                    //String surname = ackSurname.getText().toString().trim();
-
-                    archive.setDeplacement_surveillant(checkAckMovement.isChecked());
-                    archive.setAcquittement_surveillant(checkAckMovement.isChecked());
-                    //archive.setNom_surveillant(name);
-                    //archive.setPrenom_surveillant(surname);
-                    archive.setEspace_commentaire(comment);
-
-                    //recuperation de l'heure
-                    Date date = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.FRANCE);
-                    String hour = dateFormat.format(date);
-                    archive.setHeure_acquittement(hour);
-
-                    //preparation du transfert de donnees a la fermeture de l'activité
-                    Intent transfertToHomePage = new Intent(AckPage.this, MainActivity.class);
-                    transfertToHomePage.putExtra("archive", archive);
-
-                    //---------------------------------------------------------------------------------------------------//
-                    Log.d("AckPage", "onClick: ta clique sur OUI");
-                    ackConfirmationDialog.dismiss(); //ferme la boite de dialogue
-
-                    transfertToHomePage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(transfertToHomePage);
-                    Log.d("MainActivity", "onClick: et que retour au menu");
-
-                    finish(); //fermer l'activité actuelle pour éviter de l'avoir en arrière plan
-                    Log.d("AckPage", "onClick: si t la c'est que la page s'est fermé");
-                });
-
-
-            }
-        });
-    };
+        //recuperation de l'heure
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.FRANCE);
+        String hour = dateFormat.format(date);
+        archive.setHeure_acquittement(hour);
+    }
 }

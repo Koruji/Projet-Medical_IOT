@@ -38,6 +38,11 @@
             </intent-filter>
         </activity>
 
+        <!--Déclaration de l'activité en arrière plan persistante-->
+        <service android:name=".backgroundServices.ListenUDPservice"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"/>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

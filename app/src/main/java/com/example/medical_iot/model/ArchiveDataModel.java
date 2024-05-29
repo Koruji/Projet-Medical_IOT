@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class ArchiveDataModel implements Parcelable
 {
     //mes variables qui correspondent aux attributs présents dans la BD
-    private final int ID_chambre;
+    private int ID_chambre;
     private boolean deplacement_surveillant;
     private boolean acquittement_surveillant;
     private String heure_acquittement;
@@ -86,6 +86,10 @@ public class ArchiveDataModel implements Parcelable
     public int getID_chambre()
     {
         return ID_chambre;
+    }
+
+    public void setID_chambre(int ID_chambre){
+        this.ID_chambre = ID_chambre;
     }
 
     public boolean getDeplacement_surveillant()

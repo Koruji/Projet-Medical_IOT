@@ -10,7 +10,7 @@ import java.util.Objects;
 //implementation d'une classe pour se connecter à la BD
 //TO DO : rajouter les elements de connection + tester
 
-public class ConnectionToMySQL
+public class ConnectionToMySQL //(NON RETENU)
 {
     protected static String baseDonnee  = "medicaliotv3";
     protected static String ip = "192.168.0.6";
@@ -18,23 +18,25 @@ public class ConnectionToMySQL
     protected static String username = "application";
     protected static String password = "PH69+";
 
-    public Connection getConnection()
+    public Connection getConnect()
     {
         Connection connect = null;
         try
         {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+            //Class.forName("com.mysql.cj.jdbc.Driver");
+            //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            //StrictMode.setThreadPolicy(policy);
 
-            String connectionString = "jdbc:mysql://"+ip+ ":" + port + "/" + baseDonnee;
+            String connectionString = "jdbc:mysql://"+ip + ":" + port + "/" + baseDonnee;
             Log.d("CONNEXION", "c'est ok j'essaye de me co a la BD");
             connect = DriverManager.getConnection(connectionString, username, password);
+            Log.d("CONNEXION", "succès de connexion à la BD");
         }
         catch (Exception ex)
         {
-            Log.e("ERROR", Objects.requireNonNull(ex.getMessage()));
+            //Log.e("ERROR", Objects.requireNonNull(ex.getMessage()));
             Log.d("CONNEXION", "la BD veut pas se log");
+            ex.printStackTrace();
         }
         return connect;
     }

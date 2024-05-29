@@ -44,29 +44,43 @@
             android:id="@+id/archive_container_home"
 
             android:layout_width="match_parent"
-            android:layout_height="338dp"/>
-
-            <!-- A add plus tard <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="@color/lightGray"/> -->
+            android:layout_height="396dp" />
     </LinearLayout>
 
-    <!--_________________________________Informations de connexion WIFI______________________-->
-    <!--Texte indiquant les infos du WIFI-->
-    <TextView
-        android:id="@+id/wifi_info_home_page"
-
-        style="@style/DefaultTextStyle"
+    <!--_____________________________Espace bas de page_____________________________________-->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/home_wifi_info"
         app:layout_constraintBottom_toTopOf="@+id/space_for_logo"
-        app:layout_constraintTop_toBottomOf="@+id/archive_zone_home" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/archive_zone_home"
+        android:gravity="center">
 
-    <!--_____________________________Espace bas de page_____________________________________-->
+        <!--_________________________________Informations de connexion WIFI______________________-->
+        <!--Texte indiquant les infos du WIFI-->
+        <TextView
+            android:id="@+id/wifi_info_home_page"
+
+            style="@style/DefaultTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:text="@string/home_wifi_info" />
+
+        <!--Indication graphique-->
+        <TextView
+            android:id="@+id/switch_wifi_home_page"
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_wifi_error"/>
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/space_for_logo"
 
@@ -74,29 +88,31 @@
         android:layout_height="55dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <!--Logo de l'application-->
+
+        <!--Bouton de déconnexion-->
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logomedical_iot"
             android:layout_gravity="center"
             android:layout_marginStart="25dp"
+            android:contentDescription="@string/application_logo"
+            android:scaleType="centerCrop"
 
-            android:contentDescription="@string/application_logo"/>
+            android:src="@drawable/logomedical_iot" />
 
-        <!--Bouton de déconnexion-->
         <Button
             android:id="@+id/deconnexion_button"
 
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
+            android:layout_marginEnd="25dp"
             android:background="@drawable/deconnection_button"
-            android:layout_marginEnd="50dp"
-            android:contentDescription="@string/button_description_home_page"/>
+            android:contentDescription="@string/button_description_home_page" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

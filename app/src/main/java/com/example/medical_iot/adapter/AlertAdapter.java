@@ -1,18 +1,13 @@
 package com.example.medical_iot.adapter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.medical_iot.AckPage;
-import com.example.medical_iot.MainActivity;
 import com.example.medical_iot.R;
 
 //class sur la création et les interactions des alertes sur la page d'accueil

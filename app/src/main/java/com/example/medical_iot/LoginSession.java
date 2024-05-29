@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
-
+//-----------------------SOURCES----------------------//
+//https://www.youtube.com/watch?v=Gc0sLf91QeM --> obligation de renseignements
+//--------------------------------------------------//
 public class LoginSession extends AppCompatActivity {
 
+    //_________________________________________________ATTRIBUTS_______________________________________________________//
     Button validationLogin;
 
+    //_________________________________________________EXECUTION PRINCIPALE_______________________________________________________//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

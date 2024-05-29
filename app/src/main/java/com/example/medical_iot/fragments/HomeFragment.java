@@ -10,15 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.medical_iot.ArchiveRepository;
+import com.example.medical_iot.repository.ArchiveRepository;
 import com.example.medical_iot.R;
 import com.example.medical_iot.adapter.ArchiveAdapter;
 import com.example.medical_iot.model.ArchiveDataModel;
 
-import java.util.ArrayList;
-
 public class HomeFragment extends Fragment
 {
+    //on créé le repository
+    private ArchiveRepository repository = new ArchiveRepository();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -27,17 +28,13 @@ public class HomeFragment extends Fragment
         View viewArchive = inflater.inflate(R.layout.fragment_home, container, false);
 
         //on fait une liste d'archive
-        ArchiveDataModel newArchiveElement = null;
-
-        //on créé le repository
-        ArchiveRepository repository = new ArchiveRepository();
+        ArchiveDataModel newArchiveElement;
 
         //------------recuperation de la donnee a stocker dans la liste
         Bundle bundleFromMainActivity = getArguments();
         if (bundleFromMainActivity != null)
         {
-            ArchiveDataModel archiveToStock = bundleFromMainActivity.getParcelable("archive");
-            newArchiveElement = archiveToStock;
+            newArchiveElement = bundleFromMainActivity.getParcelable("archive");
             repository.updateData(newArchiveElement);
         }
 
@@ -46,6 +43,11 @@ public class HomeFragment extends Fragment
         archiveRecyclerView.setAdapter(new ArchiveAdapter(repository));
 
         return viewArchive;
+    }
+
+    public ArchiveRepository getRepository()
+    {
+        return repository;
     }
 
 }

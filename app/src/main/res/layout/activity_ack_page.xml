@@ -6,47 +6,67 @@
     android:layout_height="match_parent">
 
     <!--___________________Interface n° chambre de l'alerte en cours_____________________________-->
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/frameLayout_ack_room_concerned"
 
         android:layout_width="match_parent"
-        android:layout_height="131dp"
+        android:layout_height="180dp"
         android:background="@color/darkPurple"
         app:cardCornerRadius="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
 
         <!--texte indiquant que le numéro de chambre est indiqué-->
-        <TextView
-            android:id="@+id/text_ack_room_concerned"
-
-            style="@style/AlertTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:text="@string/ack_page_message_room_concerned" />
-
-        <!--texte qui sera modifié par la donnée recu par la base de donnée-->
-        <TextView
-            android:id="@+id/data_room_concerned"
-
-            style="@style/AlertTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="78dp"
-            android:gravity="center"
-            android:text="@string/data_change_number_room" />
-
-        <!--icone d'alerte-->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:src="@drawable/ic_alert"
-            android:contentDescription="@string/home_alert_begin"/>
-    </FrameLayout>
+            android:contentDescription="@string/home_alert_begin"
+            android:src="@drawable/ic_alert" />
+
+        <!--icone d'alerte-->
+        <TextView
+            style="@style/AlertTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/default_margin"
+            android:text="@string/ack_page_message_room_concerned" />
+
+        <!--texte qui sera modifié par la donnée recu par la base de donnée-->
+        <TextView
+            android:id="@+id/number_room_concerned"
+
+            style="@style/DataAlertTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:text="@string/data_change_number_room" />
+
+        <!--texte indiquant que la zone d'alerte est indiquée-->
+        <TextView
+            style="@style/AlertTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/default_margin"
+            android:text="@string/zone_ack_page" />
+
+        <!--texte qui sera modifié par la donnée recu par la base de donnée-->
+        <TextView
+            android:id="@+id/zone_room_concerned"
+
+            style="@style/DataAlertTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:text="@string/zone_indication_ack_page" />
+
+    </LinearLayout>
 
     <!--___________________________Zone bouton de validation_____________________________________-->
     <!--Linearlayout pour justement mettre les éléments l'un sur l'autre-->
