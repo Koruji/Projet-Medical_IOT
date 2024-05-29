@@ -52,6 +52,8 @@
     <string name="data_change_hour">hour</string>
     <string name="home_wifi_info">wifi</string>
     <string name="button_description_home_page">Bouton de deconnexion</string>
+    <string name="zone_ack_page">Zone d\'alerte :</string>
+    <string name="zone_indication_ack_page">zone</string>
 
 
 </resources>
