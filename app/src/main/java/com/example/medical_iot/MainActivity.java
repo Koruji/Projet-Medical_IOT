@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     //----utilisé par la page menu
     private FragmentTransaction transactionIntoLayout;
+    private int countOfCommit = 0;
 
     //----pour les pictogrammes
     private TextView switchWifi;
@@ -174,18 +175,35 @@ public class MainActivity extends AppCompatActivity
 
 
     //_______________________________________METHODES DU MAINACTIVITY()_______________________________________________________//
-
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : BroadcastReceiver
+    //------FONCTION : écoute en contenu pour recevoir du contenu de la part d'une autre activité / permet de lancer l'enregistrement
+    //---------------- de la première alerte en attente pour le passage a la page d'acquittement
+    //------RETOUR : aucun
     private BroadcastReceiver udpReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(ListenUDPservice.ACTION_UDP_BROADCAST.equals(intent.getAction()))
             {
-                //récupération des alertes et traitement visuel
+                //récupération des alertes
                 receptionData();
+
+                //s'il n'y a pas déjà un commit de fait pour une alerte, alors on affiche la bannière d'alerte
+                //cela permet d'éviter les erreurs en cas de réception simultanée d'alerte
+                if (countOfCommit < 1)
+                {
+                    showAlert();
+                    countOfCommit++;
+                }
             }
         }
     };
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : onStart
+    //------FONCTION : utilisé pour le BroadcastReceiver / permet entre autre de déterminer ce qui doit être fait au démarrage de
+    //---------------- l'activité mainActivity
+    //------RETOUR : aucun
     protected void onStart()
     {
         super.onStart();
@@ -193,12 +211,18 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(udpReceiver, filter);
     }
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : onStop
+    //------FONCTION : utilisé pour le BroadcastReceiver / permet entre autre de déterminer ce qui doit être fait a l'arrêt de
+    //---------------- l'activité mainActivity
+    //------RETOUR : aucun
     protected void onStop()
     {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(udpReceiver);
     }
 
+    //___________________________________________________________________________________________________________________________//
     //------METHODE : onDestroy
     //------FONCTION : cette méthode est utilisé par défaut par l'application lors de la fermeture/mise en fin de processus d'une
     //---------------- d'une activité. On peut y rajouter des éléments. Dans le cas présent, la fermeture de toutes les tâches en
@@ -345,20 +369,21 @@ public class MainActivity extends AppCompatActivity
         //1re vérification : s'il n'y a rien dans la liste des alertes alors ne fait rien
         if(!WaitingDataRepository.getInstance().getAlerte().isEmpty())
         {
-            receptionAlerte = WaitingDataRepository.getInstance().getAlerte().get(0);
+            //2eme vérification : si l'alerte dans la liste n'est pas vide alors on le copie sur receptionAlerte
             if(!Objects.equals(receptionAlerte, ""))
             {
-
-                Log.d("CONNEXION", "le layout d'alerte a été injecté");
+                receptionAlerte = WaitingDataRepository.getInstance().getAlerte().get(0);
+                Log.d("ALERTE", "une donnée a été enregistré dans receptionAlerte");
             }
             else
             {
                 //2eme vérification : supression de l'alerte n°1 si cette dernière n'a pas de données
                 WaitingDataRepository.getInstance().suppAlerte(0);
                 receptionAlerte = null;
+                Log.d("ALERTE", "aucune donnée d'enregistré dans receptionAlerte");
             }
         }
-        //Log.d("CONNEXION", "aucune alerte valide en cours");
+
     }
 
     //___________________________________________________________________________________________________________________________//
