@@ -278,9 +278,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("MainActivity", "closeApplication appelé");
 
         //mise en arrêt du service en arrière plan
-        Intent stop = new Intent(this, MainActivity.class);
-        stopService(stop);
-        onDestroy();
+        finish();
     }
 
     //___________________________________________________________________________________________________________________________//
