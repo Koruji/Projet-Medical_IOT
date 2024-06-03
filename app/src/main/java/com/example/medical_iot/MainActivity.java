@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity
         //mise en arrêt du service en arrière plan
         Intent stop = new Intent(this, MainActivity.class);
         stopService(stop);
+        onDestroy();
     }
 
     //___________________________________________________________________________________________________________________________//
@@ -420,7 +421,7 @@ public class MainActivity extends AppCompatActivity
                 " VALUES ('" + p_archive.getDeplacement_surveillant() + "', '" + p_archive.getHeure_acquittement() + "', '" + p_archive.getAcquittement_surveillant() + "', '"
                 + p_archive.getEspace_commentaire() + "');";
 
-        executorServerSend = Executors.newSingleThreadExecutor();
+        executorServerSend = Executors.newFixedThreadPool(1);
         //etat de sauvegarde a modifier
         switchSave = findViewById(R.id.save_statue);
 

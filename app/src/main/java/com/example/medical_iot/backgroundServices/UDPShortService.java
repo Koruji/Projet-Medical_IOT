@@ -1,10 +1,21 @@
 package com.example.medical_iot.backgroundServices;
 
+import static java.lang.Thread.sleep;
+
+import android.content.Intent;
+import android.util.Log;
+
+import com.example.medical_iot.model.LoginModel;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 //------------------SOURCES--------------------------//
 //https://www.jmdoudoux.fr/java/dej/chap-net.htm
@@ -16,51 +27,162 @@ public class UDPShortService
 {
     //-------------------Serveur permettant la réception des données d'alerte + envoi des données id et acquittement---------------------------------------//
     //----envoi
-    private DatagramSocket socketSendUDP; //socket pour envoi
-    final static int portEnvoi = 5002; //port du destinataire
+    private DatagramSocket socketIdentifiant;
+    private DatagramSocket socketDonneeAck;
+    final static int portEnvoi = 12345; //port du destinataire
     private DatagramPacket paquetEnvoye;
     private InetAddress adresseIPEnvoi;
+    private String login_surveillant;
+    private String mdp_surveillant;
 
     //----réception d'accusé de réception (ouvert une fois après envoi acquittement)
-    final static int portRecep = 5001; //port pour recevoir accusé de réception
+    final static int portRecep = 6000; //port pour recevoir accusé de réception
     private String donneeRecu; //va recevoir les données des alertes reçus
-    private DatagramSocket socketAckRecep; //correspond au socket ouvert de notre serveur pour l'écoute
     private DatagramPacket paquetRecu; //permet de recevoir le paquet reçu sur le port ouvert
 
 
     //------------------Méthodes de la classe----------------------------------------------------------------------//
     //----------envoi de la donnée des identifiants
-    public void envoiId()
-    {
-        //a implémenter après tests
-    }
 
+    public boolean envoiId() throws UnknownHostException {
+        // Récupération des identifiants sur l'activité AckPage
+        LoginModel loginModel = LoginModel.getInstance();
+        String login_surveillant = loginModel.getLogin_surveillant();
+        String mdp_surveillant = loginModel.getMdp_surveillant();
+
+        // Initialisation de l'adresse d'envoi (adresse de la BD)
+        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
+
+        // Allocation d'espace pour recevoir les accusés de réception
+        byte[] recep = new byte[3];
+
+        // Valeur à retourner pour indiquer la validation ou non des identifiants
+        boolean validation = false;
+
+        DatagramSocket socketEnvoi = null;
+        DatagramSocket socketReception = null;
+
+        try {
+            // Création du socket pour l'envoi
+            socketEnvoi = new DatagramSocket();
+            Log.d("UDP", "port local pour la reception est " + 6000);
+
+            // Préparation de la requête SQL de demande d'identifiant à envoyer
+            String requeteSQL = String.format(
+                    "SELECT login_surveillant, mdp_surveillant " +
+                            "FROM surveillant " +
+                            "WHERE EXISTS ( " +
+                            "SELECT login_surveillant, mdp_surveillant " +
+                            "FROM surveillant " +
+                            "WHERE login_surveillant = '%s' AND mdp_surveillant = '%s');",
+                    login_surveillant, mdp_surveillant);
+
+            // Préparation de la taille de la donnée du paquet à envoyer
+            byte[] envoi = requeteSQL.getBytes();
+
+            DatagramPacket paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, 12345);
+            // Envoi du paquet contenant les identifiants renseignés par l'utilisateur
+            socketEnvoi.send(paquetEnvoye);
+            Log.d("UDP", "paquetEnvoye pour identifiant");
+
+            // Fermeture du socket d'envoi
+            socketEnvoi.close();
+            Log.d("UDP", "fermeture socket d'envoi");
+
+            // Ouverture d'un nouveau socket pour la réception sur le port attribué localement
+            socketReception = new DatagramSocket(6000);
+
+            // Préparation de réception de la donnée d'acquittement
+            DatagramPacket paquetRecu = new DatagramPacket(recep, recep.length);
+
+            // Réception du paquet
+            Log.d("UDP", "en attente de réception de la validation des identifiants");
+            socketReception.receive(paquetRecu);
+            Log.d("UDP", "donnée d'état des identifiants reçus");
+            String donneeRecu = new String(paquetRecu.getData(), 0, paquetRecu.getLength()).trim();
+            Log.d("UDP", "donnée recu " + donneeRecu);
+
+            if ("oui".equals(donneeRecu)) {
+                validation = true;
+                Log.d("UDP", "logins validés");
+            }
+            else
+            {
+                Log.d("UDP", "logins invalides");
+            }
+
+        } catch (IOException e) {
+            Log.d("UDP", "erreur connexion login", e);
+        } finally {
+            if (socketEnvoi != null && !socketEnvoi.isClosed()) {
+                socketEnvoi.close();
+            }
+            if (socketReception != null && !socketReception.isClosed()) {
+                socketReception.close();
+                Log.d("UDP", "fermeture socket de réception");
+            }
+        }
+
+        return validation;
+    }
     //----------envoi des données acquittements
     public boolean envoiAcquittement(String p_requeteSQL) throws UnknownHostException {
-        adresseIPEnvoi = InetAddress.getByName("192.168.1.90");
+
+        //initialisation de l'adresse d'envoi (adresse de la BD) et réception ------------------------------------->
+        adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
+
+        //allocation d'espace pour recevoir les accusés de réception
         byte[] recep = new byte[1024];
-        paquetRecu = new DatagramPacket(recep, recep.length);
+
+        //valeur a retourner pour indiquer la validation ou non de la sauvegarde
         boolean save = false;
 
         try
         {
-            socketSendUDP = new DatagramSocket();
-            byte[] envoi = p_requeteSQL.getBytes();
-            paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, portEnvoi);
-            socketSendUDP.send(paquetEnvoye);
+            //preparation du socket
+            socketDonneeAck = new DatagramSocket();
 
-            //reception de l'accusé de réception
-            socketAckRecep = new DatagramSocket(portRecep);
-            socketAckRecep.receive(paquetRecu);
+            //attachement du socket à l'adressse de la BD ------------------------------------------------------>
+            socketDonneeAck.connect(adresseIPEnvoi, 12345);
+
+            //preparation de la taille de la donnée du paquet a envoyer
+            byte[] envoi = p_requeteSQL.getBytes();
+
+            paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, 12345);
+            //envoi du paquet vers la BD
+            socketDonneeAck.send(paquetEnvoye);
+
+            Log.d("CONNEXION", "paquetEnvoye pour acquittement");
+
+            //deconnexion de ce socket d'envoi
+            //sleep(4000); //attente de 4 seconde avant de fermer le socket
+            socketDonneeAck.close();
+
+            //--------------------------------------------------------------------------------------------------//
+            //réouverture du socket mais avec un port spécifique
+            socketDonneeAck = new DatagramSocket(6000);
+
+            //preparation de réception de la donnée d'acquittement
+            paquetRecu = new DatagramPacket(recep, recep.length);
+
+            //réception de l'accusé de réception de la BD
+            socketDonneeAck.receive(paquetRecu);
+            donneeRecu = new String(paquetRecu.getData());
             if(paquetRecu.getData() != null)
             {
                 save = true;
+                Log.d("UDP", "reception du message" + donneeRecu);
+                paquetRecu = null;
             }
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             e.printStackTrace();
         }
+
+        socketDonneeAck.close();
         return save;
     }
+
+
+
 }
