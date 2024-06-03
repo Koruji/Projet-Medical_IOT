@@ -11,13 +11,17 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -68,8 +72,6 @@ public class MainActivity extends AppCompatActivity
     //----pour les pictogrammes
     private TextView switchWifi;
     private final int[] switchWifiImage = {R.drawable.ic_wifi_error, R.drawable.ic_wifi};
-    private TextView switchSave;
-    private final int save = R.drawable.ic_validation;
 
     //----pour la connexion à la base de données (NON RETENUE)
     /*ConnectionToMySQL baseDeDonnee;
@@ -421,23 +423,32 @@ public class MainActivity extends AppCompatActivity
                 " VALUES ('" + p_archive.getDeplacement_surveillant() + "', '" + p_archive.getHeure_acquittement() + "', '" + p_archive.getAcquittement_surveillant() + "', '"
                 + p_archive.getEspace_commentaire() + "');";
 
-        executorServerSend = Executors.newFixedThreadPool(1);
-        //etat de sauvegarde a modifier
-        switchSave = findViewById(R.id.save_statue);
-
+        // Exécuter la tâche d'envoi dans un thread séparé
+        ExecutorService executorServerSend = Executors.newFixedThreadPool(1);
         Log.d("CONNEXION", "Thread de serveur pour envoi est lancé");
         executorServerSend.execute(() -> {
             try {
                 serveurEnvoi = new UDPShortService();
-                serveurEnvoi.envoiAcquittement(requeteSQL);
-                Log.d("CONNEXION", "requête SQL envoyé");
+                saveState = serveurEnvoi.envoiAcquittement(requeteSQL);
+                Log.d("CONNEXION", "Requête SQL envoyée");
+
+                // Afficher un message indiquant le résultat de la sauvegarde sur le thread principal
+                runOnUiThread(() -> {
+                    if (saveState) {
+                        // Afficher un message indiquant que la donnée a été enregistrée
+                        Toast.makeText(MainActivity.this, "Donnée enregistrée avec succès", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Afficher un message indiquant que la donnée n'a pas été enregistrée
+                        Toast.makeText(MainActivity.this, "Échec de l'enregistrement de la donnée", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (UnknownHostException e) {
-                throw new RuntimeException(e);
+                // Gérer l'exception
+                e.printStackTrace();
+                // Afficher une exception sur le thread principal
+                final String errorMessage = e.getMessage();
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Erreur: " + errorMessage, Toast.LENGTH_SHORT).show());
             }
-            /*if (saveState)
-            {
-                switchSave.setCompoundDrawablesWithIntrinsicBounds(save, 0, 0, 0);
-            }*/
         });
     }
 

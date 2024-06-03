@@ -127,59 +127,66 @@ public class UDPShortService
     }
     //----------envoi des données acquittements
     public boolean envoiAcquittement(String p_requeteSQL) throws UnknownHostException {
+        // Initialisation de l'adresse d'envoi (adresse de la BD)
+        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
 
-        //initialisation de l'adresse d'envoi (adresse de la BD) et réception ------------------------------------->
-        adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
-
-        //allocation d'espace pour recevoir les accusés de réception
+        // Allocation d'espace pour recevoir les accusés de réception
         byte[] recep = new byte[1024];
 
-        //valeur a retourner pour indiquer la validation ou non de la sauvegarde
+        // Valeur à retourner pour indiquer la validation ou non de la sauvegarde
         boolean save = false;
 
-        try
-        {
-            //preparation du socket
-            socketDonneeAck = new DatagramSocket();
+        DatagramSocket socketEnvoi = null;
+        DatagramSocket socketReception = null;
 
-            //attachement du socket à l'adressse de la BD ------------------------------------------------------>
-            socketDonneeAck.connect(adresseIPEnvoi, 12345);
+        try {
+            // Préparation du socket d'envoi
+            socketEnvoi = new DatagramSocket();
+            socketEnvoi.connect(adresseIPEnvoi, 12345);
 
-            //preparation de la taille de la donnée du paquet a envoyer
+            // Préparation de la taille de la donnée du paquet à envoyer
             byte[] envoi = p_requeteSQL.getBytes();
+            DatagramPacket paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, 12345);
 
-            paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, 12345);
-            //envoi du paquet vers la BD
-            socketDonneeAck.send(paquetEnvoye);
+            // Envoi du paquet vers la BD
+            socketEnvoi.send(paquetEnvoye);
+            Log.d("UDP", "paquetEnvoye pour acquittement");
 
-            Log.d("CONNEXION", "paquetEnvoye pour acquittement");
+            // Fermeture du socket d'envoi
+            socketEnvoi.close();
 
-            //deconnexion de ce socket d'envoi
-            //sleep(4000); //attente de 4 seconde avant de fermer le socket
-            socketDonneeAck.close();
+            // Réouverture du socket mais avec le port de réception 6000
+            socketReception = new DatagramSocket(6000);
 
-            //--------------------------------------------------------------------------------------------------//
-            //réouverture du socket mais avec un port spécifique
-            socketDonneeAck = new DatagramSocket(6000);
+            // Préparation de réception de la donnée d'acquittement
+            DatagramPacket paquetRecu = new DatagramPacket(recep, recep.length);
 
-            //preparation de réception de la donnée d'acquittement
-            paquetRecu = new DatagramPacket(recep, recep.length);
+            // Réception de l'accusé de réception de la BD
+            Log.d("UDP", "en attente d'accusé de réception");
+            socketReception.receive(paquetRecu);
+            String donneeRecu = new String(paquetRecu.getData(), 0, paquetRecu.getLength()).trim();
+            Log.d("UDP", "reception du message " + donneeRecu);
 
-            //réception de l'accusé de réception de la BD
-            socketDonneeAck.receive(paquetRecu);
-            donneeRecu = new String(paquetRecu.getData());
-            if(paquetRecu.getData() != null)
-            {
+            if (!donneeRecu.isEmpty()) {
                 save = true;
-                Log.d("UDP", "reception du message" + donneeRecu);
-                paquetRecu = null;
+                Log.d("UDP", "donnée bien enregistrée dans la base de donnée");
+            }
+            else
+            {
+                Log.d("UDP", "donnée pas encore enregistrée dans la base de donnée");
+            }
+
+        } catch (IOException e) {
+            Log.e("UDP", "Erreur lors de l'envoi/réception", e);
+        } finally {
+            if (socketEnvoi != null && !socketEnvoi.isClosed()) {
+                socketEnvoi.close();
+            }
+            if (socketReception != null && !socketReception.isClosed()) {
+                socketReception.close();
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        socketDonneeAck.close();
         return save;
     }
 

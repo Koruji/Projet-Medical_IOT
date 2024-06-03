@@ -58,7 +58,7 @@
             style="@style/DefaultListTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="150dp"
+            android:layout_marginStart="200dp"
 
             android:clickable="true"
             android:focusable="true"
@@ -75,20 +75,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/data_change_hour"
-            android:layout_marginStart="210dp"
+            android:layout_marginStart="260dp"
             android:gravity="center"
             android:layout_gravity="start"/>
-
-        <!--Etat de sauvegarde de la donnée-->
-        <TextView
-            android:id="@+id/save_statue"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|end"
-            android:layout_marginEnd="30dp"
-            app:drawableStartCompat="@drawable/ic_save_error"
-            app:drawableTint="@color/red" />
 
     </androidx.cardview.widget.CardView>
 
