@@ -25,25 +25,15 @@ import java.util.Arrays;
 
 public class UDPShortService
 {
-    //-------------------Serveur permettant la réception des données d'alerte + envoi des données id et acquittement---------------------------------------//
-    //----envoi
-    private DatagramSocket socketIdentifiant;
-    private DatagramSocket socketDonneeAck;
-    final static int portEnvoi = 12345; //port du destinataire
-    private DatagramPacket paquetEnvoye;
-    private InetAddress adresseIPEnvoi;
-    private String login_surveillant;
-    private String mdp_surveillant;
+    //-------------------Serveur permettant l'envoi des données id et acquittement---------------------------------------//
 
-    //----réception d'accusé de réception (ouvert une fois après envoi acquittement)
-    final static int portRecep = 6000; //port pour recevoir accusé de réception
-    private String donneeRecu; //va recevoir les données des alertes reçus
-    private DatagramPacket paquetRecu; //permet de recevoir le paquet reçu sur le port ouvert
+    //---------------------------------------------------METHODES-----------------------------------------------------------------//
 
-
-    //------------------Méthodes de la classe----------------------------------------------------------------------//
-    //----------envoi de la donnée des identifiants
-
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : envoiId
+    //------FONCTION : envoi vers le module de communication les logins renseignés par l'utilisateur / attente d'accusé de réception pour
+    //---------------- valider les logins
+    //------RETOUR : booléen
     public boolean envoiId() throws UnknownHostException {
         // Récupération des identifiants sur l'activité AckPage
         LoginModel loginModel = LoginModel.getInstance();
@@ -51,7 +41,7 @@ public class UDPShortService
         String mdp_surveillant = loginModel.getMdp_surveillant();
 
         // Initialisation de l'adresse d'envoi (adresse de la BD)
-        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
+        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.9");
 
         // Allocation d'espace pour recevoir les accusés de réception
         byte[] recep = new byte[3];
@@ -125,10 +115,15 @@ public class UDPShortService
 
         return validation;
     }
-    //----------envoi des données acquittements
+
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : envoiAcquittement
+    //------FONCTION : envoi vers le module de communication des données d'acquittement / attente d'accusé de réception pour
+    //---------------- valider l'enregistrement de ces données dans la base de données
+    //------RETOUR : booléen
     public boolean envoiAcquittement(String p_requeteSQL) throws UnknownHostException {
         // Initialisation de l'adresse d'envoi (adresse de la BD)
-        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.243");
+        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.9");
 
         // Allocation d'espace pour recevoir les accusés de réception
         byte[] recep = new byte[1024];

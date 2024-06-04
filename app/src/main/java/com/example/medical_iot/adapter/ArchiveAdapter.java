@@ -13,8 +13,11 @@ import com.example.medical_iot.repository.ArchiveRepository;
 import com.example.medical_iot.R;
 import com.example.medical_iot.model.ArchiveDataModel;
 
+//---------------------------SOURCES---------------------------------//
+//https://www.youtube.com/watch?v=WlDzTh4WXek
+//-------------------------------------------------------------------//
 
-//class sur la création et les interactions des icones d'archive
+//NOTE : classe sur la création et les interactions des icones d'archives
 public class ArchiveAdapter extends RecyclerView.Adapter<ArchiveAdapter.ViewHolder>
 {
 

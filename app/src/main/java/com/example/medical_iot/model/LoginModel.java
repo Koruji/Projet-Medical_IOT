@@ -8,11 +8,19 @@ import com.example.medical_iot.backgroundServices.UDPShortService;
 
 public class LoginModel
 {
+    //NOTE : classe qui définit le model d'un login (identifiant + mot de passe)
+
     //_________________________________________________ATTRIBUTS_______________________________________________________//
     private static LoginModel instance;
     private String login_surveillant;
     private String mdp_surveillant;
-    private Context context;
+
+    //----------------------------------------------CONSTRUCTEUR (permet du moins de définir un objet)-------------------------------------------------------//
+    public void setLoginModel(String p_login, String p_mdp)
+    {
+        this.login_surveillant = p_login;
+        this.mdp_surveillant = p_mdp;
+    }
 
     //--------------------------------------------------METHODES-------------------------------------------------------//
     public static synchronized LoginModel getInstance() {
@@ -22,12 +30,7 @@ public class LoginModel
         return instance;
     }
 
-    public void setLoginModel(String p_login, String p_mdp)
-    {
-        this.login_surveillant = p_login;
-        this.mdp_surveillant = p_mdp;
-    }
-
+    //------------------------------------------------Ensemble de getter de la classe-----------------------------------//
     public String getLogin_surveillant() {
         return login_surveillant;
     }

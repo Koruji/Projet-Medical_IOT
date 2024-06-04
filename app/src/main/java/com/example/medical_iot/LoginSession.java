@@ -25,12 +25,12 @@ import java.util.concurrent.Executors;
 public class LoginSession extends AppCompatActivity {
 
     //_________________________________________________ATTRIBUTS_______________________________________________________//
-    private Button validationLogin;
-    private UDPShortService udpServer;
+    private Button validationLogin; //bouton de validation de la page de login
+    private UDPShortService udpServer; //serveur UDP pour l'envoi des logins et la vérification
     private volatile boolean checkValue = false;
-    private ExecutorService executorServer;
-    private EditText ID;
-    private EditText mdp;
+    private ExecutorService executorServer; //tâche d'arrière plan
+    private EditText ID; //zone de texte de l'ID
+    private EditText mdp; //zone de texte du mot de passe
 
     //_________________________________________________EXECUTION PRINCIPALE_______________________________________________________//
     @Override
@@ -67,6 +67,11 @@ public class LoginSession extends AppCompatActivity {
         });
     }
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : startSend
+    //------FONCTION : permet de lancer l'envoi des données logins vers le module de communication / permet également d'indiquer
+    //---------------- si les logins sont erronés ou d'indiquer de remplir la zone texte si l'utilisateur n'a rien renseigné
+    //------RETOUR : aucun
     private void startSend() {
         executorServer = Executors.newSingleThreadExecutor();
         Log.d("UDP", "Thread pour les identifiants ouvert");
@@ -77,6 +82,7 @@ public class LoginSession extends AppCompatActivity {
                 checkValue = udpServer.envoiId();
                 Log.d("UDP", "Passage par l'envoi login");
 
+                //lancement des éléments graphiques en fonction du contexte
                 runOnUiThread(() -> {
                     if (checkValue) {
                         if (!executorServer.isShutdown()) {

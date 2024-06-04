@@ -11,9 +11,14 @@ import androidx.fragment.app.Fragment;
 
 import com.example.medical_iot.R;
 
-//création du fragment des alertes sur la page d'accueil
+//--------------------------SOURCES--------------------------------------------------//
+//https://openclassrooms.com/fr/courses/8150246-developpez-votre-premiere-application-android?archived-source=4517166
+//https://youtube.com/playlist?list=PLMS9Cy4Enq5JnwAxe6Ao74qSTxxXjiw7N&si=yZT4TEG9P1kJ26ob
+//----------------------------------------------------------------------------------//
+
 public class HomeFragmentAlert extends Fragment
 {
+    //NOTE : ceci est un fragment qui contient la vue sur les alertes visuelles (bannière rouge)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)

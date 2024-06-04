@@ -47,10 +47,14 @@ import java.util.concurrent.TimeUnit;
 //https://www.youtube.com/watch?v=didDyJkt-zQ --> bouton back
 //https://openclassrooms.com/fr/courses/4568596-construisez-une-interface-utilisateur-flexible-et-adaptative/4568603-comprenez-les-differents-moyens-de-naviguer-sur-une-application
 //https://androidcorpo.com/persistance-des-donnees/149-sharedpreferences --> sharedPreferences
+//https://youtube.com/playlist?list=PLMS9Cy4Enq5JnwAxe6Ao74qSTxxXjiw7N&si=yZT4TEG9P1kJ26ob
 //----------------------------------------------------------------//
 public class MainActivity extends AppCompatActivity
 {
     //_________________________________________________ATTRIBUTS_______________________________________________________//
+    //----pour le service d'écoute UDP en arrière plan
+    private Intent serviceUDP;
+
     //----pour la page de login
     private SharedPreferences login;
     private ArchiveRepository repository;
@@ -61,7 +65,6 @@ public class MainActivity extends AppCompatActivity
 
     //----pour le serveur UDP
     private UDPShortService serveurEnvoi;
-    private ExecutorService executorServerSend;
     private String receptionAlerte;
     private boolean saveState;
 
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity
 
         //---------------Réception des données d'alerte-------------------------------------------------------------------//
         //démarrage de l'écoute constante du serveur UDP pour la récéption des alertes
-        Intent serviceUDP = new Intent(this, ListenUDPservice.class);
+        serviceUDP = new Intent(this, ListenUDPservice.class);
         serviceUDP.putExtra("appelCommandeNotif", "Démarrage du service UDP");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceUDP);
@@ -253,14 +256,9 @@ public class MainActivity extends AppCompatActivity
             Log.d("MainActivity", "je ferme la 1re tache en arrière plan");
         }
 
-        if(executorServerSend != null && !executorServerSend.isShutdown())
-        {
-            executorServerSend.shutdownNow();
-            Log.d("MainActivity", "je ferme la 2eme tache en arrière plan");
-        }
-
-        //effacement de toutes les données d'archive
-        //repository.clearData();
+        //fermeture du service
+        Intent serviceFermeture = new Intent(this, ListenUDPservice.class);
+        stopService(serviceFermeture);
     }
 
     //___________________________________________________________________________________________________________________________//

@@ -14,12 +14,19 @@ import com.example.medical_iot.repository.ArchiveRepository;
 import com.example.medical_iot.R;
 import com.example.medical_iot.adapter.ArchiveAdapter;
 import com.example.medical_iot.model.ArchiveDataModel;
+//--------------------------SOURCES--------------------------------------------------//
+//https://openclassrooms.com/fr/courses/8150246-developpez-votre-premiere-application-android?archived-source=4517166
+//https://youtube.com/playlist?list=PLMS9Cy4Enq5JnwAxe6Ao74qSTxxXjiw7N&si=yZT4TEG9P1kJ26ob
+//----------------------------------------------------------------------------------//
 
 public class HomeFragment extends Fragment
 {
-    //on créé le repository
+    //NOTE : ceci est un fragment qui contient la vue sur les alertes traitées sur la page de menu
+
+    //--------------------------------------------------ATTRIBUTS-------------------------------------------------------//
     private ArchiveRepository repository = new ArchiveRepository();
 
+    //--------------------------------------------------EXECUTION PRINCIPALE-------------------------------------------------------//
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -45,6 +52,11 @@ public class HomeFragment extends Fragment
         return viewArchive;
     }
 
+    //--------------------------------------------------METHODES---------------------------------------------------------------//
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : getRepository
+    //------FONCTION : retourne le repository actuel des alertes acquittées
+    //------RETOUR : objet de type ArchiveRepository
     public ArchiveRepository getRepository()
     {
         return repository;

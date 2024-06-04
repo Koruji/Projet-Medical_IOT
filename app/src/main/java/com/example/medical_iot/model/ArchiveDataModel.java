@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 
 public class ArchiveDataModel implements Parcelable
 {
-    //mes variables qui correspondent aux attributs présents dans la BD
+    //--------------------------------------------------ATTRIBUTS-------------------------------------------------------------//
+    //les attributs correspondent aux attributs présents dans la BD
     private int ID_chambre;
     private boolean deplacement_surveillant;
     private boolean acquittement_surveillant;
@@ -19,8 +20,7 @@ public class ArchiveDataModel implements Parcelable
     private String prenom_surveillant;
     private String espace_commentaire;
 
-    //constructeur par défaut (en attendant pas de constructeur avec param j'attend la BD)
-
+    //--------------------------------------------------CONSTRUCTEURS-------------------------------------------------------------//
     public ArchiveDataModel() {
         this.ID_chambre = 0;
         this.deplacement_surveillant = false;
@@ -31,7 +31,7 @@ public class ArchiveDataModel implements Parcelable
         this.espace_commentaire = " ";
     }
 
-    //constructeur avec paramètre (EN ATTENTE)
+    //constructeur avec paramètres
     public ArchiveDataModel(int ID_chambre, boolean deplacement_surveillant, boolean acquittement_surveillant, String heure_acquittement, String nom_surveillant, String prenom_surveillant, String espace_commentaire) {
         this.ID_chambre = ID_chambre;
         this.deplacement_surveillant = deplacement_surveillant;
@@ -50,6 +50,11 @@ public class ArchiveDataModel implements Parcelable
         }
     }
 
+    //-----------------------------------------------------------METHODES------------------------------------------------------------//
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : validateHourFormat
+    //------FONCTION : permet de valider le format d'horaire
+    //------RETOUR : booléen
     private boolean validateHourFormat(String hour)
     {
         // Expression régulière pour vérifier le format HH:mm
@@ -58,29 +63,6 @@ public class ArchiveDataModel implements Parcelable
         Matcher matcher = pattern.matcher(hour);
         return matcher.matches();
     }
-
-    //----------Implémentation Parcelable--LECTURE------------------------------------------------//
-    protected ArchiveDataModel(Parcel in) {
-        ID_chambre = in.readInt();
-        deplacement_surveillant = in.readByte() != 0;
-        acquittement_surveillant = in.readByte() != 0;
-        heure_acquittement = in.readString();
-        nom_surveillant = in.readString();
-        prenom_surveillant = in.readString();
-        espace_commentaire = in.readString();
-    }
-
-    public static final Creator<ArchiveDataModel> CREATOR = new Creator<ArchiveDataModel>() {
-        @Override
-        public ArchiveDataModel createFromParcel(Parcel in) {
-            return new ArchiveDataModel(in);
-        }
-
-        @Override
-        public ArchiveDataModel[] newArray(int size) {
-            return new ArchiveDataModel[size];
-        }
-    };
 
     //---------------Ensemble de getter et setter-------------------//
     public int getID_chambre()
@@ -158,6 +140,31 @@ public class ArchiveDataModel implements Parcelable
     {
         this.espace_commentaire = espace_commentaire;
     }
+
+    //NOTE : le parcelable permet la circulation d'un objet ArchiveDataModel entre deux activitées
+
+    //----------Implémentation Parcelable--LECTURE------------------------------------------------//
+    protected ArchiveDataModel(Parcel in) {
+        ID_chambre = in.readInt();
+        deplacement_surveillant = in.readByte() != 0;
+        acquittement_surveillant = in.readByte() != 0;
+        heure_acquittement = in.readString();
+        nom_surveillant = in.readString();
+        prenom_surveillant = in.readString();
+        espace_commentaire = in.readString();
+    }
+
+    public static final Creator<ArchiveDataModel> CREATOR = new Creator<ArchiveDataModel>() {
+        @Override
+        public ArchiveDataModel createFromParcel(Parcel in) {
+            return new ArchiveDataModel(in);
+        }
+
+        @Override
+        public ArchiveDataModel[] newArray(int size) {
+            return new ArchiveDataModel[size];
+        }
+    };
 
     //----------Implémentation Parcelable--ECRITURE------------------------------------------------//
     @Override

@@ -10,11 +10,21 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.example.medical_iot.repository.WaitingDataRepository;
+//-------------------SOURCES------------------------------------------------------------//
+//https://devstory.net/10427/android-notification
+//https://developer.android.com/develop/ui/views/notifications/build-notification?hl=fr
+//-------------------------------------------------------------------------------------//
 
 public class NotificationAlert
 {
-    public static final String CHANNEL_ID = "NotificationCountAlertes";
+    //-----------------------------------------ATTRIBUTS------------------------------------------------------------------------//
+    public static final String CHANNEL_ID = "NotificationCountAlertes"; //définition du nom du channel de notification
 
+    //-----------------------------------------METHODES--------------------------------------------------------------------------//
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : createNotification
+    //------FONCTION : permet de créer une instance de notification qui indiquera le nombre d'alertes a traiter
+    //------RETOUR : aucun
     public static void createNotification(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Alertes à traiter : ";
@@ -32,6 +42,10 @@ public class NotificationAlert
         }
     }
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : sendNotification
+    //------FONCTION : permet d'envoyer une notification sur le téléphone mobile avec les paramètres définis dans createNotification
+    //------RETOUR : aucun
     public static void sendNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.medical_iot.R;
 
-//class sur la création et les interactions des alertes sur la page d'accueil
+//---------------------------SOURCES---------------------------------//
+//https://www.youtube.com/watch?v=WlDzTh4WXek
+//-------------------------------------------------------------------//
+
+//NOTE : classe sur la création et les interactions des alertes sur la page d'accueil
 public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder>
 {
 

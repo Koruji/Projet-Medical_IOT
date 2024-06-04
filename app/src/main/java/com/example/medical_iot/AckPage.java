@@ -4,6 +4,7 @@ package com.example.medical_iot;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -162,6 +163,7 @@ public class AckPage extends AppCompatActivity {
     //------METHODE : createDialogBox
     //------FONCTION : créer une boite de dialogue a choix après un clic sur "Valider l'acquittement"
     //------RETOUR : aucun
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void createDialogBox() {
         //instanciation de la boite de dialogue
         ackConfirmationDialog = new Dialog(this);
@@ -183,7 +185,9 @@ public class AckPage extends AppCompatActivity {
 
         //on indique la dialogBox doit apparaitre juste au dessus de l'activité AckPage (vu groupé)
         ackConfirmationDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        ackConfirmationDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_confirmation_ack_background));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ackConfirmationDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_confirmation_ack_background));
+        }
 
         //on interdit à l'application de fermer la boite de dialogue en cas de clique en dehors de la zone
         ackConfirmationDialog.setCancelable(false);

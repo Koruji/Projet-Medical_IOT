@@ -23,7 +23,7 @@ import java.net.DatagramSocket;
 //------------SOURCES----------------------------------//
 //https://www.youtube.com/watch?v=YZL-_XJSClc --> informations sur Service + code (Philipp Lackner)
 //https://devstory.net/10427/android-notification --> notifications
-//
+//-------------------------------------------------------//
 
 public class ListenUDPservice extends Service
 {
@@ -48,6 +48,10 @@ public class ListenUDPservice extends Service
     }
 
     //----------------------------------METHODES-------------------------------------------------------//
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : startUDPListenerServer
+    //------FONCTION : lance le serveur UDP en arrière plan pour réceptionner les alertes en cours
+    //------RETOUR : aucun
     private void startUDPListenerServer()
     {
         //état du socket d'écoute (true -> en écoute / false -> fermé)
@@ -102,6 +106,11 @@ public class ListenUDPservice extends Service
         return null;
     }
 
+
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : onStartCommand
+    //------FONCTION : au lancement d'un objet du service, une notification est affiché sur le smartphone pour indiquer son lancement
+    //------RETOUR : entier
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //on récupère l'intent du MainActivity pour démarrer le service
@@ -139,6 +148,10 @@ public class ListenUDPservice extends Service
         socketListenUDP.close();
     }
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : createListenUDPNotificationSystem
+    //------FONCTION : création du paramétrage de la notification système
+    //------RETOUR : aucun
     private void createListenUDPNotificationSystem()
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
