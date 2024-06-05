@@ -173,7 +173,13 @@ public class MainActivity extends AppCompatActivity
         //----------------------Bouton de déconnexion--------------------------------------------------------------------//
         Button deconnexionButton = findViewById(R.id.deconnexion_button);
         //si le bouton de déconnexion est cliqué, alors l'identifiant renseigné est déconnecté et l'application se ferme
-        deconnexionButton.setOnClickListener(v -> closeApplication());
+        deconnexionButton.setOnClickListener(v -> {
+            try {
+                closeApplication();
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         //------------------------Paramétrage du bouton retour-----------------------------------------------------------------//
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -266,14 +272,16 @@ public class MainActivity extends AppCompatActivity
     //------FONCTION : cette méthode remet à zéro le passage par la page de login. Cela signifie qu'après l'appel du destroy et
     //---------------- de la fermeture de l'application, une fois que l'on retourne sur cette dernière, la page de login réapparait.
     //------RETOUR : aucun
-    protected void closeApplication()
-    {
+    protected void closeApplication() throws UnknownHostException {
         //avant de fermer l'application il est essentiel de remettre à 0 le passage par la page de login
         //cela permettra à la réouverture de remontrer la page de login
         SharedPreferences.Editor edit = login.edit();
         edit.putBoolean("loginOpen", false);
         edit.apply();
         Log.d("MainActivity", "closeApplication appelé");
+
+        //envoi de la donnée de fermeture de session au module de communication
+        serveurEnvoi.sendCloseApplication();
 
         //mise en arrêt du service en arrière plan
         finish();

@@ -23,8 +23,7 @@ import java.util.Arrays;
 
 //--------------------------------------------------//
 
-public class UDPShortService
-{
+public class UDPShortService {
     //-------------------Serveur permettant l'envoi des données id et acquittement---------------------------------------//
 
     //---------------------------------------------------METHODES-----------------------------------------------------------------//
@@ -61,10 +60,7 @@ public class UDPShortService
             String requeteSQL = String.format(
                     "SELECT login_surveillant, mdp_surveillant " +
                             "FROM surveillant " +
-                            "WHERE EXISTS ( " +
-                            "SELECT login_surveillant, mdp_surveillant " +
-                            "FROM surveillant " +
-                            "WHERE login_surveillant = '%s' AND mdp_surveillant = '%s');",
+                            "WHERE login_surveillant = '%s' AND mdp_surveillant = '%s';",
                     login_surveillant, mdp_surveillant);
 
             // Préparation de la taille de la donnée du paquet à envoyer
@@ -95,9 +91,7 @@ public class UDPShortService
             if ("oui".equals(donneeRecu)) {
                 validation = true;
                 Log.d("UDP", "logins validés");
-            }
-            else
-            {
+            } else {
                 Log.d("UDP", "logins invalides");
             }
 
@@ -165,9 +159,7 @@ public class UDPShortService
             if (!donneeRecu.isEmpty()) {
                 save = true;
                 Log.d("UDP", "donnée bien enregistrée dans la base de donnée");
-            }
-            else
-            {
+            } else {
                 Log.d("UDP", "donnée pas encore enregistrée dans la base de donnée");
             }
 
@@ -185,6 +177,38 @@ public class UDPShortService
         return save;
     }
 
+    //___________________________________________________________________________________________________________________________//
+    //------METHODE : sendCloseApplication
+    //------FONCTION : envoi vers le module de communication un message indiquant la fermeture de la session sur Medical_IOT
+    //------RETOUR : aucun
+    public void sendCloseApplication() throws UnknownHostException {
+        // Initialisation de l'adresse d'envoi (adresse de la BD)
+        InetAddress adresseIPEnvoi = InetAddress.getByName("192.168.0.9");
 
+        DatagramSocket socketEnvoi = null;
+        DatagramSocket socketReception = null;
 
+        try {
+            // Préparation du socket d'envoi
+            socketEnvoi = new DatagramSocket();
+            socketEnvoi.connect(adresseIPEnvoi, 12345);
+
+            String message = "fermetureApp";
+            byte[] envoi = message.getBytes();
+            DatagramPacket paquetEnvoye = new DatagramPacket(envoi, envoi.length, adresseIPEnvoi, 12345);
+
+            // Envoi du paquet vers la BD
+            socketEnvoi.send(paquetEnvoye);
+            Log.d("UDP", "la BD a était prévenu de la fermeture de l'application");
+
+            // Fermeture du socket d'envoi
+            socketEnvoi.close();
+        } catch (IOException e) {
+            Log.e("UDP", "Erreur lors de l'envoi/réception", e);
+        } finally {
+            if (socketEnvoi != null && !socketEnvoi.isClosed()) {
+                socketEnvoi.close();
+            }
+        }
+    }
 }
