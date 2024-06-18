@@ -17,5 +17,6 @@ Pour répondre à tous ces besoins, le système est divisé en 4 grandes sous-pa
 
 
 NOTE : il faut savoir que je n'ai aucune expérience avec Android Studio (lorsque j'ai commencé le projet). 
+
 NOTE de fin de projet : ce projet peut être encore amélioré, mais il est totalement fonctionnel :) 
 Créer cette application m'a permis d'en apprendre beaucoup plus sur le développement d'un logiciel (mise en place d'un IHM intuitif, mise en place de la mécanique de l'application), mais m'a également réconforter dans l'idée de continuer mes études dans la programmation et le développement d'application. 
